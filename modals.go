@@ -17,7 +17,7 @@ func NewItemModal(t *ToDo) tview.Primitive {
 
 	form := tview.NewForm().
 		SetButtonsAlign(tview.AlignCenter).
-		AddInputField("Name", name, 20, nil, func(text string) { name = text })
+		AddInputField("Name", name, 51, nil, func(text string) { name = text })
 	form.SetBorder(true).SetTitle(title).SetTitleAlign(tview.AlignCenter)
 
 	if t != nil {
@@ -50,7 +50,7 @@ func NewItemModal(t *ToDo) tview.Primitive {
 		AddItem(tview.NewFlex().SetDirection(tview.FlexRow).
 			AddItem(nil, 0, 1, false).
 			AddItem(form, 7, 1, true).
-			AddItem(nil, 0, 1, false), 30, 1, true).
+			AddItem(nil, 0, 1, false), 60, 1, true).
 		AddItem(nil, 0, 1, false)
 }
 
