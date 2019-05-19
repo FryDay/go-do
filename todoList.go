@@ -68,10 +68,16 @@ func (t *ToDoList) Draw(screen tcell.Screen) {
 	}
 }
 
-// Add ...
+// Add a new item
 func (t *ToDoList) Add(item *ToDo) {
 	t.ToDos = append(t.ToDos, item)
 	t.sort()
+}
+
+// Delete the currently selected item
+func (t *ToDoList) Delete() {
+	t.ToDos = t.ToDos.Delete(t.CurrentToDo)
+	t.selectUp()
 }
 
 func (t *ToDoList) selectUp() {

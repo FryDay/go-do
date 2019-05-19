@@ -11,9 +11,6 @@ type ToDo struct {
 	TimeCompleted time.Time `json:"time_completed,omitempty"`
 }
 
-// ToDos is a list of ToDo
-type ToDos []*ToDo
-
 // NewToDo takes a name and returns a ToDo
 func NewToDo(name string) *ToDo {
 	return &ToDo{
@@ -30,6 +27,16 @@ func (td *ToDo) Complete() {
 // Reopen clears TimeCompleted
 func (td *ToDo) Reopen() {
 	td.TimeCompleted = time.Time{}
+}
+
+// ToDos is a list of ToDo
+type ToDos []*ToDo
+
+// Delete removes a ToDo by index
+func (tds ToDos) Delete(i int) ToDos {
+	copy(tds[i:], tds[i+1:])
+	tds[len(tds)-1] = nil
+	return tds[:len(tds)-1]
 }
 
 func (tds ToDos) Len() int {

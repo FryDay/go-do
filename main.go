@@ -1,6 +1,9 @@
 package main
 
 import (
+	"os"
+	"path/filepath"
+
 	"github.com/gdamore/tcell"
 	"github.com/rivo/tview"
 )
@@ -17,8 +20,9 @@ var (
 )
 
 const (
-	mainPage = "main"
-	itemPage = "item"
+	mainPage    = "main"
+	itemPage    = "item"
+	confirmPage = "confirm"
 )
 
 func init() {
@@ -37,7 +41,7 @@ func init() {
 
 	footer.SetScrollable(false)
 	footer.SetDynamicColors(true)
-	footer.SetText("[::b][a[]Add Item  [e[]Edit Item  [q[]Quit")
+	footer.SetText("[::b][a[]Add Item  [e[]Edit Item  [d[]Delete  [q[]Quit")
 
 	flex.SetDirection(tview.FlexRow)
 	flex.AddItem(header, 1, 1, false)
@@ -46,6 +50,8 @@ func init() {
 
 	pages.SetBackgroundColor(tcell.ColorDefault)
 	pages.AddAndSwitchToPage(mainPage, flex, true)
+
+	load()
 }
 
 func input(event *tcell.EventKey) *tcell.EventKey {
@@ -61,10 +67,25 @@ func input(event *tcell.EventKey) *tcell.EventKey {
 		modal := NewItemModal(list.ToDos[list.CurrentToDo])
 		editMode = true
 		pages.AddPage(itemPage, modal, true, true)
+	case 'd':
+		if len(list.ToDos) > 0 {
+			modal := NewConfirmationModal("Delete")
+			pages.AddPage(confirmPage, modal, true, true)
+		}
 	case 'q':
 		app.Stop()
 	}
 	return event
+}
+
+func load() {
+	configDir := filepath.Join(os.Getenv("HOME"), ".config", "go-do")
+	err := os.MkdirAll(configDir, os.ModePerm)
+	if err != nil {
+		panic(err)
+	}
+
+	//TODO: Load Files
 }
 
 func main() {
