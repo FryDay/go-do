@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -9,12 +11,13 @@ import (
 )
 
 var (
-	app    = tview.NewApplication()
-	header = tview.NewTextView()
-	footer = tview.NewTextView()
-	flex   = tview.NewFlex()
-	pages  = tview.NewPages()
-	list   = NewToDoList()
+	app       = tview.NewApplication()
+	header    = tview.NewTextView()
+	footer    = tview.NewTextView()
+	flex      = tview.NewFlex()
+	pages     = tview.NewPages()
+	list      = NewToDoList()
+	configDir = filepath.Join(os.Getenv("HOME"), ".config", "go-do")
 
 	editMode bool
 )
@@ -79,13 +82,34 @@ func input(event *tcell.EventKey) *tcell.EventKey {
 }
 
 func load() {
-	configDir := filepath.Join(os.Getenv("HOME"), ".config", "go-do")
 	err := os.MkdirAll(configDir, os.ModePerm)
 	if err != nil {
 		panic(err)
 	}
 
-	//TODO: Load Files
+	var files []string
+	err = filepath.Walk(configDir, func(path string, info os.FileInfo, err error) error {
+		if !info.IsDir() {
+			files = append(files, path)
+		}
+		return nil
+	})
+	if err != nil {
+		panic(err)
+	}
+	for _, file := range files {
+		b, err := ioutil.ReadFile(file)
+		if err != nil {
+			panic(err)
+		}
+
+		todo := &ToDo{}
+		err = json.Unmarshal(b, todo)
+		if err != nil {
+			panic(err)
+		}
+		list.Add(todo)
+	}
 }
 
 func main() {

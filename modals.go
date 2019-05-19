@@ -25,7 +25,7 @@ func NewItemModal(t *ToDo) tview.Primitive {
 			if name == "" {
 				return
 			}
-			t.Name = name
+			t.Edit(name)
 			pages.RemovePage(itemPage)
 			editMode = false
 		})

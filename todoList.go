@@ -70,7 +70,7 @@ func (t *ToDoList) Draw(screen tcell.Screen) {
 
 // Add a new item
 func (t *ToDoList) Add(item *ToDo) {
-	t.ToDos = append(t.ToDos, item)
+	t.ToDos = t.ToDos.Add(item)
 	t.sort()
 }
 

@@ -1,4 +1,4 @@
-module github.com/FryDay/godo
+module github.com/FryDay/go-do
 
 go 1.12
 
