@@ -50,7 +50,7 @@ func (td *ToDo) Filename() string {
 // WriteFile ...
 func (td *ToDo) WriteFile() {
 	b, _ := json.Marshal(td)
-	ioutil.WriteFile(td.Filename(), b, 0644)
+	ioutil.WriteFile(td.Filename(), b, 0600)
 }
 
 // DeleteFile ...

@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -18,6 +19,7 @@ var (
 	pages     = tview.NewPages()
 	list      = NewToDoList()
 	configDir = filepath.Join(os.Getenv("HOME"), ".config", "go-do")
+	lockFile  = filepath.Join(configDir, ".lock")
 
 	editMode bool
 )
@@ -29,6 +31,11 @@ const (
 )
 
 func init() {
+	if _, err := os.Stat(lockFile); err == nil {
+		fmt.Println("another instance is running")
+		os.Exit(1)
+	}
+
 	app.SetBeforeDrawFunc(func(s tcell.Screen) bool {
 		s.Clear()
 		return false
@@ -87,9 +94,11 @@ func load() {
 		panic(err)
 	}
 
+	ioutil.WriteFile(lockFile, nil, 0600)
+
 	var files []string
 	err = filepath.Walk(configDir, func(path string, info os.FileInfo, err error) error {
-		if !info.IsDir() {
+		if filepath.Ext(path) == ".json" {
 			files = append(files, path)
 		}
 		return nil
@@ -113,6 +122,7 @@ func load() {
 }
 
 func main() {
+	defer os.Remove(lockFile)
 	defer app.Stop()
 
 	app.SetRoot(pages, true)
