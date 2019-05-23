@@ -12,21 +12,24 @@ import (
 // ToDo represents a task
 type ToDo struct {
 	Name          string    `json:"name,omitempty"`
+	Note          string    `json:"note,omitempty"`
 	TimeCreated   time.Time `json:"time_created,omitempty"`
 	TimeCompleted time.Time `json:"time_completed,omitempty"`
 }
 
 // NewToDo takes a name and returns a ToDo
-func NewToDo(name string) *ToDo {
+func NewToDo(name, note string) *ToDo {
 	return &ToDo{
 		Name:        name,
+		Note:        note,
 		TimeCreated: time.Now(),
 	}
 }
 
 // Edit ToDo
-func (td *ToDo) Edit(name string) {
+func (td *ToDo) Edit(name, note string) {
 	td.Name = name
+	td.Note = note
 	go td.WriteFile()
 }
 
