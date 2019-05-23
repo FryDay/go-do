@@ -9,15 +9,17 @@ import (
 // NewItemModal returns a new ItemModal primitive
 func NewItemModal(t *ToDo) tview.Primitive {
 	title := "New Item"
-	name := ""
+	var name, note string
 	if t != nil {
 		title = "Edit Item"
 		name = t.Name
+		note = t.Note
 	}
 
 	form := tview.NewForm().
 		SetButtonsAlign(tview.AlignCenter).
-		AddInputField("Name", name, 51, nil, func(text string) { name = text })
+		AddInputField("Name", name, 51, nil, func(text string) { name = text }).
+		AddInputField("Note", note, 51, nil, func(text string) { note = text })
 	form.SetBorder(true).SetTitle(title).SetTitleAlign(tview.AlignCenter)
 
 	if t != nil {
@@ -25,7 +27,7 @@ func NewItemModal(t *ToDo) tview.Primitive {
 			if name == "" {
 				return
 			}
-			t.Edit(name)
+			t.Edit(name, note)
 			pages.RemovePage(itemPage)
 			editMode = false
 		})
@@ -34,7 +36,7 @@ func NewItemModal(t *ToDo) tview.Primitive {
 			if name == "" {
 				return
 			}
-			list.Add(NewToDo(name))
+			list.Add(NewToDo(name, note))
 			pages.RemovePage(itemPage)
 			editMode = false
 		})
@@ -49,7 +51,7 @@ func NewItemModal(t *ToDo) tview.Primitive {
 		AddItem(nil, 0, 1, false).
 		AddItem(tview.NewFlex().SetDirection(tview.FlexRow).
 			AddItem(nil, 0, 1, false).
-			AddItem(form, 7, 1, true).
+			AddItem(form, 9, 1, true).
 			AddItem(nil, 0, 1, false), 60, 1, true).
 		AddItem(nil, 0, 1, false)
 }
