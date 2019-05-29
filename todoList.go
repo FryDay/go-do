@@ -42,6 +42,7 @@ func (t *ToDoList) InputHandler() func(event *tcell.EventKey, setFocus func(p tv
 			} else {
 				t.ToDos[t.CurrentToDo].Reopen()
 			}
+			t.CurrentToDo = 0
 			t.sort()
 		}
 	})
