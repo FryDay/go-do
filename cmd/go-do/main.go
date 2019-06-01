@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	godo "github.com/FryDay/go-do"
 	"github.com/gdamore/tcell"
 	"github.com/rivo/tview"
 )
@@ -112,7 +113,7 @@ func load() {
 			panic(err)
 		}
 
-		todo := &ToDo{}
+		todo := &godo.ToDo{}
 		err = json.Unmarshal(b, todo)
 		if err != nil {
 			panic(err)

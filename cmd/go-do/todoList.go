@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sort"
 
+	godo "github.com/FryDay/go-do"
 	"github.com/gdamore/tcell"
 	"github.com/rivo/tview"
 )
@@ -11,7 +12,7 @@ import (
 // ToDoList ...
 type ToDoList struct {
 	*tview.Box
-	ToDos       ToDos
+	ToDos       godo.ToDos
 	CurrentToDo int
 }
 
@@ -70,7 +71,7 @@ func (t *ToDoList) Draw(screen tcell.Screen) {
 }
 
 // Add a new item
-func (t *ToDoList) Add(item *ToDo) {
+func (t *ToDoList) Add(item *godo.ToDo) {
 	t.ToDos = t.ToDos.Add(item)
 	t.sort()
 }

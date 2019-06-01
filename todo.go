@@ -1,4 +1,4 @@
-package main
+package godo
 
 import (
 	"encoding/json"
@@ -46,7 +46,9 @@ func (td *ToDo) Reopen() {
 }
 
 // Filename returns a filename based on ToDo values
+//TODO: Move function to some sort of writer
 func (td *ToDo) Filename() string {
+	configDir := filepath.Join(os.Getenv("HOME"), ".config", "go-do")
 	return filepath.Join(configDir, fmt.Sprintf("go-do_%s.json", td.TimeCreated.Format("060102150405.999")))
 }
 

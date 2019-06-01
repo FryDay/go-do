@@ -3,11 +3,12 @@ package main
 import (
 	"fmt"
 
+	godo "github.com/FryDay/go-do"
 	"github.com/rivo/tview"
 )
 
 // NewItemModal returns a new ItemModal primitive
-func NewItemModal(t *ToDo) tview.Primitive {
+func NewItemModal(t *godo.ToDo) tview.Primitive {
 	title := "New Item"
 	var name, note string
 	if t != nil {
@@ -36,7 +37,7 @@ func NewItemModal(t *ToDo) tview.Primitive {
 			if name == "" {
 				return
 			}
-			list.Add(NewToDo(name, note))
+			list.Add(godo.NewToDo(name, note))
 			pages.RemovePage(itemPage)
 			editMode = false
 		})
