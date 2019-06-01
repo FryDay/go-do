@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"sort"
 
+	godo "github.com/FryDay/go-do"
 	"github.com/gdamore/tcell"
 	"github.com/rivo/tview"
 )
@@ -11,7 +12,7 @@ import (
 // ToDoList ...
 type ToDoList struct {
 	*tview.Box
-	ToDos       ToDos
+	ToDos       godo.ToDos
 	CurrentToDo int
 }
 
@@ -37,10 +38,13 @@ func (t *ToDoList) InputHandler() func(event *tcell.EventKey, setFocus func(p tv
 		case 'j':
 			t.selectDown()
 		case ' ':
-			if t.ToDos[t.CurrentToDo].TimeCompleted.IsZero() {
-				t.ToDos[t.CurrentToDo].Complete()
+			td := t.ToDos[t.CurrentToDo]
+			if td.TimeCompleted.IsZero() {
+				td.Complete()
+				writeToDoFile(td)
 			} else {
-				t.ToDos[t.CurrentToDo].Reopen()
+				td.Reopen()
+				writeToDoFile(td)
 			}
 			t.CurrentToDo = 0
 			t.sort()
@@ -70,13 +74,15 @@ func (t *ToDoList) Draw(screen tcell.Screen) {
 }
 
 // Add a new item
-func (t *ToDoList) Add(item *ToDo) {
+func (t *ToDoList) Add(item *godo.ToDo) {
 	t.ToDos = t.ToDos.Add(item)
+	writeToDoFile(item)
 	t.sort()
 }
 
 // Delete the currently selected item
 func (t *ToDoList) Delete() {
+	deleteToDoFile(t.ToDos[t.CurrentToDo])
 	t.ToDos = t.ToDos.Delete(t.CurrentToDo)
 	t.selectUp()
 }
