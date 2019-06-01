@@ -76,7 +76,7 @@ func (t *ToDoList) Draw(screen tcell.Screen) {
 // Add a new item
 func (t *ToDoList) Add(item *godo.ToDo) {
 	t.ToDos = t.ToDos.Add(item)
-	writeToDoFile(t.ToDos[t.CurrentToDo])
+	writeToDoFile(item)
 	t.sort()
 }
 
