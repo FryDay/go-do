@@ -8,13 +8,13 @@ import (
 )
 
 // NewItemModal returns a new ItemModal primitive
-func NewItemModal(t *godo.ToDo) tview.Primitive {
+func NewItemModal(td *godo.ToDo) tview.Primitive {
 	title := "New Item"
 	var name, note string
-	if t != nil {
+	if td != nil {
 		title = "Edit Item"
-		name = t.Name
-		note = t.Note
+		name = td.Name
+		note = td.Note
 	}
 
 	form := tview.NewForm().
@@ -23,12 +23,13 @@ func NewItemModal(t *godo.ToDo) tview.Primitive {
 		AddInputField("Note", note, 51, nil, func(text string) { note = text })
 	form.SetBorder(true).SetTitle(title).SetTitleAlign(tview.AlignCenter)
 
-	if t != nil {
+	if td != nil {
 		form.AddButton("Edit", func() {
 			if name == "" {
 				return
 			}
-			t.Edit(name, note)
+			td.Edit(name, note)
+			writeToDoFile(td)
 			pages.RemovePage(itemPage)
 			editMode = false
 		})
@@ -37,7 +38,9 @@ func NewItemModal(t *godo.ToDo) tview.Primitive {
 			if name == "" {
 				return
 			}
-			list.Add(godo.NewToDo(name, note))
+			newToDo := godo.NewToDo(name, note)
+			writeToDoFile(newToDo)
+			list.Add(newToDo)
 			pages.RemovePage(itemPage)
 			editMode = false
 		})
