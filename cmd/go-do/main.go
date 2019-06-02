@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -21,6 +22,8 @@ var (
 	list      = NewToDoList()
 	configDir = filepath.Join(os.Getenv("HOME"), ".config", "go-do")
 	lockFile  = filepath.Join(configDir, ".lock")
+	logFile   = filepath.Join(configDir, "go-do.log")
+	errors    = make(chan error)
 
 	editMode bool
 )
@@ -36,6 +39,22 @@ func init() {
 		fmt.Println("another instance is running")
 		os.Exit(1)
 	}
+
+	go func() {
+		l, err := os.OpenFile(logFile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0600)
+		if err != nil {
+			panic(err)
+		}
+		defer l.Close()
+
+		log.SetOutput(l)
+		for {
+			err := <-errors
+			if err != nil {
+				log.Println(err.Error())
+			}
+		}
+	}()
 
 	app.SetBeforeDrawFunc(func(s tcell.Screen) bool {
 		s.Clear()

@@ -14,9 +14,15 @@ func filename(td *godo.ToDo) string {
 }
 
 func writeToDoFile(td *godo.ToDo) {
-	go ioutil.WriteFile(filename(td), td.Bytes(), 0600)
+	go func() {
+		err := ioutil.WriteFile(filename(td), td.Bytes(), 0600)
+		errors <- err
+	}()
 }
 
 func deleteToDoFile(td *godo.ToDo) {
-	go os.Remove(filename(td))
+	go func() {
+		err := os.Remove(filename(td))
+		errors <- err
+	}()
 }
