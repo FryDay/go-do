@@ -10,10 +10,14 @@ import (
 
 	godo "github.com/FryDay/go-do"
 	"github.com/gdamore/tcell"
+	flags "github.com/jessevdk/go-flags"
 	"github.com/rivo/tview"
 )
 
 var (
+	options Options
+	parser  = flags.NewParser(&options, flags.Default)
+
 	app       = tview.NewApplication()
 	header    = tview.NewTextView()
 	footer    = tview.NewTextView()
@@ -34,10 +38,21 @@ const (
 	confirmPage = "confirm"
 )
 
+// Options ...
+type Options struct {
+	Force bool `short:"f" long:"force" description:"Force removal of lock file and start"`
+}
+
 func init() {
-	if _, err := os.Stat(lockFile); err == nil {
-		fmt.Println("another instance is running")
+	if _, err := parser.Parse(); err != nil {
 		os.Exit(1)
+	}
+
+	if !options.Force {
+		if _, err := os.Stat(lockFile); err == nil {
+			fmt.Println("another instance is running")
+			os.Exit(1)
+		}
 	}
 
 	go func() {
