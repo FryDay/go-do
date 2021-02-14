@@ -80,12 +80,14 @@ func init() {
 
 	header.SetScrollable(false)
 	header.SetDynamicColors(true)
+	header.SetTextColor(tcell.ColorBlue)
 	header.SetText("[::b]Go-Do")
 
 	list.SetBackgroundColor(tcell.ColorDefault)
 
 	footer.SetScrollable(false)
 	footer.SetDynamicColors(true)
+	footer.SetTextColor(tcell.ColorBlue)
 	footer.SetText("[::b][a[]Add Item  [e[]Edit Item [K[]Priority Up [J[]Priority Down [d[]Delete  [q[]Quit")
 
 	flex.SetDirection(cview.FlexRow)

@@ -75,9 +75,9 @@ func (t *ToDoList) Draw(screen tcell.Screen) {
 		if !td.TimeCompleted.IsZero() {
 			checkbox = "[red]\u2612"
 		}
-		line := fmt.Sprintf(` %s[white]   %s`, checkbox, td.ToString())
+		line := fmt.Sprintf(` %s[default]   %s`, checkbox, td.ToString())
 		if i == t.CurrentToDo {
-			line = fmt.Sprintf(` %s[white]   [::r]%s`, checkbox, td.ToString())
+			line = fmt.Sprintf(` %s[default]   [::r]%s`, checkbox, td.ToString())
 		}
 		cview.Print(screen, []byte(line), x, y+i, width, cview.AlignLeft, tcell.ColorDefault)
 	}
