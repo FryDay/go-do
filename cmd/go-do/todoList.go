@@ -5,13 +5,13 @@ import (
 	"sort"
 
 	godo "github.com/FryDay/go-do"
-	"github.com/gdamore/tcell"
-	"github.com/rivo/tview"
+	"github.com/gdamore/tcell/v2"
+	"gitlab.com/tslocum/cview"
 )
 
 // ToDoList ...
 type ToDoList struct {
-	*tview.Box
+	*cview.Box
 	ToDos       godo.ToDos
 	CurrentToDo int
 }
@@ -19,13 +19,13 @@ type ToDoList struct {
 // NewToDoList returns a new todo list.
 func NewToDoList() *ToDoList {
 	return &ToDoList{
-		Box: tview.NewBox(),
+		Box: cview.NewBox(),
 	}
 }
 
 // InputHandler ...
-func (t *ToDoList) InputHandler() func(event *tcell.EventKey, setFocus func(p tview.Primitive)) {
-	return t.WrapInputHandler(func(event *tcell.EventKey, setFocus func(p tview.Primitive)) {
+func (t *ToDoList) InputHandler() func(event *tcell.EventKey, setFocus func(p cview.Primitive)) {
+	return t.WrapInputHandler(func(event *tcell.EventKey, setFocus func(p cview.Primitive)) {
 		switch event.Key() {
 		case tcell.KeyUp:
 			t.selectUp()
@@ -69,7 +69,7 @@ func (t *ToDoList) Draw(screen tcell.Screen) {
 		if i == t.CurrentToDo {
 			line = fmt.Sprintf(` %s[white]   [::r]%s`, checkbox, td.Name)
 		}
-		tview.Print(screen, line, x, y+i, width, tview.AlignLeft, tcell.ColorDefault)
+		cview.Print(screen, []byte(line), x, y+i, width, cview.AlignLeft, tcell.ColorDefault)
 	}
 }
 

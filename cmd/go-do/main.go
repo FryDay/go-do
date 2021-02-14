@@ -9,20 +9,20 @@ import (
 	"path/filepath"
 
 	godo "github.com/FryDay/go-do"
-	"github.com/gdamore/tcell"
+	"github.com/gdamore/tcell/v2"
 	flags "github.com/jessevdk/go-flags"
-	"github.com/rivo/tview"
+	"gitlab.com/tslocum/cview"
 )
 
 var (
 	options Options
 	parser  = flags.NewParser(&options, flags.Default)
 
-	app       = tview.NewApplication()
-	header    = tview.NewTextView()
-	footer    = tview.NewTextView()
-	flex      = tview.NewFlex()
-	pages     = tview.NewPages()
+	app       = cview.NewApplication()
+	header    = cview.NewTextView()
+	footer    = cview.NewTextView()
+	flex      = cview.NewFlex()
+	pages     = cview.NewPages()
 	list      = NewToDoList()
 	configDir = filepath.Join(os.Getenv("HOME"), ".config", "go-do")
 	lockFile  = filepath.Join(configDir, ".lock")
@@ -88,7 +88,7 @@ func init() {
 	footer.SetDynamicColors(true)
 	footer.SetText("[::b][a[]Add Item  [e[]Edit Item  [d[]Delete  [q[]Quit")
 
-	flex.SetDirection(tview.FlexRow)
+	flex.SetDirection(cview.FlexRow)
 	flex.AddItem(header, 1, 1, false)
 	flex.AddItem(list, 0, 1, true)
 	flex.AddItem(footer, 1, 1, false)
@@ -100,26 +100,28 @@ func init() {
 }
 
 func input(event *tcell.EventKey) *tcell.EventKey {
-	if editMode {
-		return event
-	}
-	switch event.Rune() {
-	case 'a':
-		modal := NewItemModal(nil)
-		editMode = true
-		pages.AddPage(itemPage, modal, true, true)
-	case 'e':
-		modal := NewItemModal(list.ToDos[list.CurrentToDo])
-		editMode = true
-		pages.AddPage(itemPage, modal, true, true)
-	case 'd':
-		if len(list.ToDos) > 0 {
-			modal := NewConfirmationModal("Delete")
-			pages.AddPage(confirmPage, modal, true, true)
+	if !editMode {
+		switch event.Rune() {
+		case 'a':
+			modal := NewItemModal(nil)
+			editMode = true
+			pages.AddPage(itemPage, modal, true, true)
+		case 'e':
+			if len(list.ToDos) > 0 {
+				modal := NewItemModal(list.ToDos[list.CurrentToDo])
+				editMode = true
+				pages.AddPage(itemPage, modal, true, true)
+			}
+		case 'd':
+			if len(list.ToDos) > 0 {
+				modal := NewConfirmationModal("Delete")
+				pages.AddPage(confirmPage, modal, true, true)
+			}
+		case 'q':
+			app.Stop()
 		}
-	case 'q':
-		app.Stop()
 	}
+
 	return event
 }
 

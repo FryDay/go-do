@@ -3,7 +3,7 @@ module github.com/FryDay/go-do
 go 1.12
 
 require (
-	github.com/gdamore/tcell v1.1.2
+	github.com/gdamore/tcell/v2 v2.1.1-0.20201225194624-29bb185874fd
 	github.com/jessevdk/go-flags v1.4.0
-	github.com/rivo/tview v0.0.0-20190515161233-bd836ef13b4b
+	gitlab.com/tslocum/cview v1.5.3
 )
