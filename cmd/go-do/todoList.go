@@ -37,6 +37,16 @@ func (t *ToDoList) InputHandler() func(event *tcell.EventKey, setFocus func(p cv
 			t.selectUp()
 		case 'j':
 			t.selectDown()
+		case 'K':
+			td := t.ToDos[t.CurrentToDo]
+			td.Up()
+			writeToDoFile(td)
+			t.sort()
+		case 'J':
+			td := t.ToDos[t.CurrentToDo]
+			td.Down()
+			writeToDoFile(td)
+			t.sort()
 		case ' ':
 			td := t.ToDos[t.CurrentToDo]
 			if td.TimeCompleted.IsZero() {
@@ -65,9 +75,9 @@ func (t *ToDoList) Draw(screen tcell.Screen) {
 		if !td.TimeCompleted.IsZero() {
 			checkbox = "[red]\u2612"
 		}
-		line := fmt.Sprintf(` %s[white]   %s`, checkbox, td.Name)
+		line := fmt.Sprintf(` %s[white]   %s`, checkbox, td.ToString())
 		if i == t.CurrentToDo {
-			line = fmt.Sprintf(` %s[white]   [::r]%s`, checkbox, td.Name)
+			line = fmt.Sprintf(` %s[white]   [::r]%s`, checkbox, td.ToString())
 		}
 		cview.Print(screen, []byte(line), x, y+i, width, cview.AlignLeft, tcell.ColorDefault)
 	}

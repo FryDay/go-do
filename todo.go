@@ -2,6 +2,8 @@ package godo
 
 import (
 	"encoding/json"
+	"log"
+	"strings"
 	"time"
 )
 
@@ -9,6 +11,7 @@ import (
 type ToDo struct {
 	Name          string    `json:"name,omitempty"`
 	Note          string    `json:"note,omitempty"`
+	Priority      uint8     `json:"priority,omitempty"`
 	TimeCreated   time.Time `json:"time_created,omitempty"`
 	TimeCompleted time.Time `json:"time_completed,omitempty"`
 }
@@ -18,6 +21,7 @@ func NewToDo(name, note string) *ToDo {
 	return &ToDo{
 		Name:        name,
 		Note:        note,
+		Priority:    0,
 		TimeCreated: time.Now(),
 	}
 }
@@ -26,6 +30,21 @@ func NewToDo(name, note string) *ToDo {
 func (td *ToDo) Edit(name, note string) {
 	td.Name = name
 	td.Note = note
+}
+
+// Up a ToDo's priority
+func (td *ToDo) Up() {
+	log.Println(td.Priority)
+	td.Priority++
+	log.Println(td.Priority)
+}
+
+// Down a ToDo's priority
+func (td *ToDo) Down() {
+	if td.Priority == 0 {
+		return
+	}
+	td.Priority--
 }
 
 // Complete sets TimeCompleted to the current time
@@ -42,6 +61,21 @@ func (td *ToDo) Reopen() {
 func (td *ToDo) Bytes() []byte {
 	b, _ := json.Marshal(*td)
 	return b
+}
+
+// ToString ...
+func (td *ToDo) ToString() string {
+	s := td.Name
+
+	if td.Priority > 0 {
+		s += " ("
+		for i := uint8(0); i < td.Priority; i++ {
+			s += "+"
+		}
+		s += ")"
+	}
+
+	return s
 }
 
 // ToDos is a list of ToDo
@@ -69,10 +103,36 @@ func (tds ToDos) Swap(i, j int) {
 }
 
 func (tds ToDos) Less(i, j int) bool {
+	if !tds[i].TimeCompleted.IsZero() && !tds[j].TimeCompleted.IsZero() {
+		iName := strings.ToLower(tds[i].Name)
+		jName := strings.ToLower(tds[j].Name)
+		if iName > jName {
+			return false
+		}
+		if iName < jName {
+			return true
+		}
+	}
 	if tds[i].TimeCompleted.After(tds[j].TimeCompleted) {
 		return false
 	}
 	if tds[i].TimeCompleted.Before(tds[j].TimeCompleted) {
+		return true
+	}
+
+	if tds[i].Priority < tds[j].Priority {
+		return false
+	}
+	if tds[i].Priority > tds[j].Priority {
+		return true
+	}
+
+	iName := strings.ToLower(tds[i].Name)
+	jName := strings.ToLower(tds[j].Name)
+	if iName > jName {
+		return false
+	}
+	if iName < jName {
 		return true
 	}
 
