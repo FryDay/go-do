@@ -86,7 +86,7 @@ func init() {
 
 	footer.SetScrollable(false)
 	footer.SetDynamicColors(true)
-	footer.SetText("[::b][a[]Add Item  [e[]Edit Item [K[]Higher Priority] [J[]Lower Priority] [d[]Delete  [q[]Quit")
+	footer.SetText("[::b][a[]Add Item  [e[]Edit Item [K[]Priority Up [J[]Priority Down [d[]Delete  [q[]Quit")
 
 	flex.SetDirection(cview.FlexRow)
 	flex.AddItem(header, 1, 1, false)
