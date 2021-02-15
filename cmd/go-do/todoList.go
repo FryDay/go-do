@@ -41,12 +41,12 @@ func (t *ToDoList) InputHandler() func(event *tcell.EventKey, setFocus func(p cv
 			td := t.ToDos[t.CurrentToDo]
 			td.Up()
 			writeToDoFile(td)
-			t.sort()
+			t.sort(false)
 		case 'J':
 			td := t.ToDos[t.CurrentToDo]
 			td.Down()
 			writeToDoFile(td)
-			t.sort()
+			t.sort(false)
 		case ' ':
 			td := t.ToDos[t.CurrentToDo]
 			if td.TimeCompleted.IsZero() {
@@ -56,8 +56,8 @@ func (t *ToDoList) InputHandler() func(event *tcell.EventKey, setFocus func(p cv
 				td.Reopen()
 				writeToDoFile(td)
 			}
+			t.sort(true)
 			t.CurrentToDo = 0
-			t.sort()
 		}
 	})
 }
@@ -87,7 +87,7 @@ func (t *ToDoList) Draw(screen tcell.Screen) {
 func (t *ToDoList) Add(item *godo.ToDo) {
 	t.ToDos = t.ToDos.Add(item)
 	writeToDoFile(item)
-	t.sort()
+	t.sort(false)
 }
 
 // Delete the currently selected item
@@ -111,8 +111,11 @@ func (t *ToDoList) selectDown() {
 	}
 }
 
-func (t *ToDoList) sort() {
+func (t *ToDoList) sort(top bool) {
 	toDoRef := t.ToDos[t.CurrentToDo]
+	if top {
+		toDoRef = t.ToDos[0]
+	}
 	sort.Sort(t.ToDos)
 	for i, td := range t.ToDos {
 		if td == toDoRef {
